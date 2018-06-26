@@ -54,13 +54,9 @@ def sendMail(file):
     header['To'] = toaddrs
     header['From'] = fromaddr
     header.attach(MIMEText(messageHtml, 'html'))
+    
+    zip = getZipFile(file, filename)
 
-    fp = open(file, 'rb')
-    zip = MIMEBase('application', 'zip')
-    zip.set_payload(fp.read())
-    zip.add_header('Content-Disposition', "attachment; filename= %s" % file)
-    fp.close()
-    encoders.encode_base64(zip)
     header.attach(zip)
 
     # Sending email
@@ -74,6 +70,15 @@ def sendMail(file):
     server.sendmail(fromaddr, toaddrs, header.as_string())
     print ('Succesfully sent email...')
     server.quit()
+    
+def getZipFile(file, filename):
+    fp = open(file, 'rb')
+    zip2 = MIMEBase('application', 'zip')
+    zip2.set_payload(fp.read())
+    zip2.add_header('Content-Disposition', "attachment; filename= %s" % filename)
+    fp.close()
+    encoders.encode_base64(zip2)
+    return zip2
 
 if __name__ == "__main__":
     main(sys.argv[1:])
